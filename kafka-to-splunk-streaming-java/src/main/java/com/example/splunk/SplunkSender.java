@@ -12,9 +12,17 @@ public class SplunkSender {
     public static void sendToSplunk(String rawPayload) {
         try {
             JSONObject obj = new JSONObject(rawPayload);
-            String targetIndex = Config.DEFAULT_SPLUNK_INDEX;
-            if (obj.has("otel.splunkindex")) {
-                targetIndex = obj.getString("otel.splunkindex").trim() + "_logs";
+
+String targetIndex;
+if (obj.has("otel.splunkindex") && !obj.getString("otel.splunkindex").trim().isEmpty()) {
+    String baseIndex = obj.getString("otel.splunkindex").trim();
+    targetIndex = baseIndex + "_" + Config.CUSTOM_TEXT;
+
+    // Optional: update the payload itself
+    obj.put("otel.splunkindex", targetIndex);
+} else {
+    targetIndex = Config.DEFAULT_SPLUNK_INDEX;
+}
             }
 
             JSONObject event = new JSONObject();
