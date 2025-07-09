@@ -18,11 +18,19 @@ def send_to_splunk(payload_raw):
         logging.warning("Invalid JSON")
         return
 
-    target_index = f"{data.get('otel.splunkindex', '').strip()}_logs" if data.get("otel.splunkindex") else SPLUNK_DEFAULT_INDEX
+    # 🔧 Append custom_text to otel.splunkindex
+    base_index = data.get("otel.splunkindex", "").strip()
+    if base_index:
+        full_index = f"{base_index}_{CUSTOM_TEXT}"
+    else:
+        full_index = SPLUNK_DEFAULT_INDEX
+
+    # Optional: update the message payload with the full index
+    data["otel.splunkindex"] = full_index
 
     event = {
         "event": data,
-        "index": target_index,
+        "index": full_index,
         "sourcetype": "_json"
     }
 
