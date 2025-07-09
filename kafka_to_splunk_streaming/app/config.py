@@ -8,3 +8,4 @@ SPLUNK_TOKEN = os.getenv("SPLUNK_TOKEN", "")
 SPLUNK_DEFAULT_INDEX = os.getenv("SPLUNK_INDEX", "main")
 
 KAFKA_GROUP_ID = os.getenv("KAFKA_GROUP_ID", "splunk-sink-group")
+CUSTOM_TEXT = os.getenv("CUSTOM_TEXT", "prod")
