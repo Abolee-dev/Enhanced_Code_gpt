@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-to-splunk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-to-splunk
+  template:
+    metadata:
+      labels:
+        app: kafka-to-splunk
+    spec:
+      containers:
+      - name: kafka-to-splunk
+        image: yourregistry/kafka-to-splunk:latest
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka:9092"
+        - name: KAFKA_TOPICS
+          value: "infra-metrics"
+        - name: SPLUNK_HEC_URL
+          value: "http://splunk-hec:8088"
+        - name: SPLUNK_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: splunk-token
+              key: token
+        - name: SPLUNK_INDEX
+          value: "main"
